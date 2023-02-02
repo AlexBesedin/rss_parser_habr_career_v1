@@ -1,15 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
-from csv import writer
+import csv
 from time import sleep
 
 
-def rss_habr_jobs_parser(url: str):
-    soup = BeautifulSoup(url.content, 'xml')
+def rss_habr_jobs_parser(content):
+    soup = BeautifulSoup(content, 'xml')
     entries = soup.find_all('item')
 
-    with open('career.csv', 'w', encoding='utf8') as csvfile:
-        write = writer(csvfile)
+    with open('career.csv', 'w', encoding='utf8', newline='') as csvfile:
+        write = csv.writer(csvfile)
         header = ['author', 'title', 'description', 'link', 'pubDate']
         write.writerow(header)
 
@@ -29,9 +29,11 @@ print('Запись файла завершена!')
 
 
 def main():
-    url = requests.get('https://career.habr.com/vacancies/rss?currency=RUR&q=python&sort=relevance&type=all')
-    rss_habr_jobs_parser(url)
+    url = 'https://career.habr.com/vacancies/rss'
+    content = requests.get(url).content
+    rss_habr_jobs_parser(content)
 
 
 if __name__ == "__main__":
     main()
+    
